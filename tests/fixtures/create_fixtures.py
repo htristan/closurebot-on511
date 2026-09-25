@@ -9,7 +9,13 @@ def create_event_fixture():
     os.makedirs('tests/fixtures', exist_ok=True)
     
     # Rest of the function remains the same
-    response = requests.get("https://511on.ca/api/v2/get/event")
+    api_key = os.environ.get('ON511_API_KEY')
+    if not api_key:
+        raise Exception('ON511 API key is required. Set ON511_API_KEY environment variable.')
+    response = requests.get(
+        "https://511on.ca/api/v2/get/event",
+        params={'key': api_key, 'format': 'json', 'lang': 'en'},
+    )
     if response.ok:
         events = json.loads(response.text)[:3]
         
